@@ -1,0 +1,140 @@
+
+MultiGen OpenFlight(tm) file format loader library.
+
+Author: Michael M. Morrison (morrison@users.sourceforge.net)
+
+The files in this directory have been put under the LGPL, there are no longer
+any further restrictions.
+
+Fltlib is a MultiGen OpenFlight file format loader library.  It was written
+in C to facilitate ease of integration into legacy code.
+
+The library will parse an OpenFlight format file, and build an in-memory data
+structure (scene graph) based on the hierarchy in the file.  This data
+structure may be all that is required for your run-time software, however its
+organization and associated data mainly reflects the flight file format, and
+has not been optimized in any way for run-time.  The library should be fully
+reentrant, and as such, thread safe.
+
+This loader was written using PDF documents for the "15.7" flight format, 
+available on www.multigen.com/downloads.  Not all record types are currently
+supported, however the majority of those commonly in use are:
+Header, Group, Object, Face, DOF, Color Palette, External Reference, Texture
+Reference, Vertex Palette, Vertex With *, Vertex List, LOD, Switch, Material
+Palette, Instance Definition/Reference, and BSP entry.  The record attributes 
+Matrix, Text Comment, and Long ID are also supported.
+
+In addition, several functions exist to load texture attribute (.attr) files.
+
+Most 14.x thru 15.6 files should parse correctly.  Version 12 and 13 of "Flight"
+do not usually work, as they use obsolete nodes that I have no documentation
+for.  Some of the new features of the 15.7 format are supported, including
+multitexture and meshes.
+
+This document is not 100% complete as of yet.  Before adding anything to the
+library drop me a note to see if it is already being worked on.
+
+--- HOW TO USE THE LIBRARY ---
+
+First, type 'make' to build the library and test files.  See the instructions
+in the makefile for more details.
+
+The main functions are:
+
+FltFile * fltOpen( const char * filename ): Locate the file, build a FltFile
+data structure, and prepare the file for parsing.  Returns NULL on failure.
+
+int fltParse( FltFile * flt, int skipNodes ): Read and parse the file, building
+the in-memory data structures.  If skipNodes is '1', simply visit each node
+but do not create the in-memory data structures (useful for debugging).  Note
+that external references are not automatically resolved.  You must resolve them
+by calling fltOpen, fltParse, etc.
+
+int fltClose( FltFile * flt ):  Closes the open file only.  Does not free any
+information associated with it.  Should usually be called after fltParse.
+
+int fltFileFree( FltFile * flt ):  Walks the tree and free all nodes and
+all memory associated with the flt file.
+
+After fltParse has been called, the tree may be accessed from the base node
+flt->header, as that is considered the toplevel of the tree.  See the misc
+functions in 'flt.c', specifically walkLinear and descendChildren for traversal
+methods.
+
+The meat of the parsing code is located in records.c.
+
+Examples of usage will be in flt.c, which parses a flt file and outputs a 
+textual description.
+
+In addition I have written a flt loader based on this library for an excellent
+scene graph library known as SGL (sgl.sourceforge.net).  That archive contains
+a file called sglLoadFile_flt.cpp which implements a complete loader.  SGL is 
+highly recommended.
+
+Anyone attempting to create a loader from this library should download the
+flight specification from multigen.com, as it explains in some detail what most
+elements of each record (and therefore data structure) mean.
+
+A quick note about Instance Definitions/References: When parsing the hierarchy,
+Instance Definitions should be skipped (and not added to the scene graph) until
+they are referenced.  The function fltLookupInstance() will find the
+instance definition of a particular index, which can be traversed at the 
+appropriate time.
+
+--- UTILITY FUNCTIONS ---
+
+All contained in util.c:
+
+fltLookupColor: Takes a flt file context and color index, and creates RGBA
+values in return.  Face records (or others) that contain a colorIndex can be
+decoded in this way from the color palette.
+
+fltLookupTexture: Takes a flt file context and texture index, and returns a
+pointer to the FltTexture record associated with that index.
+
+fltLookupMaterial: Takes a flt file context and material index, and returns a
+pointer to the FltMaterial record associated with that index.
+
+fltLookupInstance: Takes a flt file context and instance definition index, 
+and returns a pointer to the FltInstanceDefinition record associated with 
+that index.
+
+fltDumpNode: Prints an textual representation of the node to the screen.
+
+FltTxAttributes * fltLoadAttributes( const char * file ): Reads specific
+entries from a texture attribute (.attr) file, including min and mag filters. 
+
+fltAddSearchPath: Add a path to the list of search paths for this flt file.
+Note that the path to the FltFile itself is automatically added to the search
+path.
+
+fltFindFile: Use the search paths specified for this FltFile to attempt to
+locate a file.  Any paths in the somewhat standard TXTPATH environment variable
+are searched as well (see env vars below).  This provides a centralized 
+function to use for this task, and should be used to locate all externally
+referenced files and textures.
+
+fltNodeName: Lookup the name of a node, taking into account the LONGID record
+attribute and returning it if available.  Returns NULL if a node does not 
+support the ID field, or no name can be found for some reason.
+
+fltSafeNodeName: Same as fltNodeName, except will return the static string
+"Unnamed" if the node does not support ID's.  Will also return the static 
+string "Null" if a null pointer is passed as the node.
+
+--- ENVIRONMENT VARIABLES ---
+
+TXTPATH: Is the location to your textures and externally referenced .flt files
+as well.  It is added to the list of external paths which may have already
+been specified through function calls.
+
+Note that directories must be separated by semicolons ';' since 
+MultiGen Creator inserts the drive letter with a colon in the path list.  From
+bash this would be 'export TXTPATH="/root/tex;/root/myfiles/tex"'.  Note the
+double quotes are necessary because bash considers the semicolon as a command
+separator.
+
+
+* MultiGen, OpenFlight, and Flight Format are registered trademarks of 
+MultiGen-Paradigm Inc.
+

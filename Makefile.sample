@@ -1,0 +1,48 @@
+
+LIBOBJS = buffer.o stack.o fileio.o records.o util.o math.o writer.o zmalloc.o
+
+#CFLAGS = -shared -fPIC -g -O0
+CFLAGS = -g -O3 -fomit-frame-pointer -shared -fPIC
+
+#
+# The OS may require "real" ranlib (BSD targets like Mac OSX)
+#
+ARFLAGS = cr
+RANLIB = $(AR) s
+#RANLIB = ranlib
+
+.c.o:
+	$(CC) -Wall -c $(CFLAGS) $<
+
+all: libflt.so flt fltw
+
+flt: flt.o libflt.so
+	$(CC) -g -o $@ flt.o -L. -lflt -lm
+
+fltw: fltw.o libflt.so
+	$(CC) -g -o $@ fltw.o -L. -lflt -lm
+
+debug: flt
+
+flt.ef: flt.o libflt.so
+	$(CC) -g -o $@ flt.o -L. -lflt -lm -lefence
+
+libflt.a: $(LIBOBJS)
+	$(AR) $(ARFLAGS) $@ $(LIBOBJS)
+	$(RANLIB) $@
+
+libflt.so: $(LIBOBJS)
+	$(CC) $(CFLAGS) -o $@ $(LIBOBJS)
+
+zmalloc.o: zmalloc.h
+records.o: flt.h recnames.h
+fileio.o: flt.h
+buffer.o: flt.h
+stack.o: flt.h
+util.o: flt.h
+flt.o: flt.h
+math.o: flt.h
+writer.o: flt.h fltw.h
+
+clean:
+	$(RM) *.o flt flt.ef libflt.*
