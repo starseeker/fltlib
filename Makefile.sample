@@ -45,4 +45,4 @@ math.o: flt.h
 writer.o: flt.h fltw.h
 
 clean:
-	$(RM) *.o flt flt.ef libflt.*
+	$(RM) *.o flt fltw flt.ef libflt.*

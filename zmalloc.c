@@ -181,6 +181,10 @@ _localAlloc( int size, slab ** whichSlab, const char * file, int line )
 
 #endif /* USE_LOCALALLOC */
 
+#ifdef zmallocFreeAll
+#undef zmallocFreeAll
+#endif
+
 /*
  * If this function is not called, a small amount of mem will
  * be leaked.  It must be called if we expect to use zfuncs to alloc again.

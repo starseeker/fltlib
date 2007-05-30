@@ -153,7 +153,7 @@ main( int argc, char **argv )
 	} else {
 
 		flt = fltOpen( argv[1] );
-		printf("0flt->fileName: %s\n", flt->fileName );
+		printf("flt->fileName: %s\n", flt->fileName );
 		fflush(stdout);
 
 	//	fltRegisterRecordUserCallback( 68, callback, NULL );
@@ -168,13 +168,14 @@ main( int argc, char **argv )
 		else
 			fltParse( flt, 0 );
 
+		fltClose( flt );
 
-		printf("1flt->fileName: %s\n", flt->fileName );
 		fflush(stdout);
-		//walkTree( (FltNode *)flt->header );
 		walkLinear( flt );
 
-		fltClose( flt );
+		printf("\n\n------TREE-------\n\n");
+		descendChildren( (FltNode *)flt->header );
+
 	}
 
 	fltFileFree( flt );

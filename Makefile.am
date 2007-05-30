@@ -20,6 +20,7 @@ libflt_la_SOURCES =		\
 	stack.c\
 	writer.c\
 	math.c\
+	zmalloc.c\
 	util.c
 
 
