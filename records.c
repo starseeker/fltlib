@@ -190,20 +190,28 @@ fltPopLevel( FLTRECORDFUNC_ARGLIST )
 	// we set flt->lastNode here, so that the next node has this node
 	// as its neighbor.
 
-	flt->lastNode = FltStackPop( flt->stack );
-
-	if( debug ) {
-		if( FLT_GETPARENT(flt) == NULL )
-			printf("Popping: At top level.\n" );
-		else
-			printf("Popping: '%s' is new parent.\t", 
-															fltSafeNodeName( FLT_GETPARENT(flt) ) );
-
-		printf("lastNode: %s\n", fltSafeNodeName( flt->lastNode ) );
+	if( FLT_GETPARENT(flt) == NULL )
+	{
+		printf( "Warning in fltlib: attempted to pop the stack on a top-level node.\n"
+			"\tThis indicates that THE FLT FILE IS MALFORMED.\n"
+			"\tIgnoring the pop opcode, WITH NO GUARANTEE OF CORRECTNESS.\n" );
 	}
+	else
+	{
+		flt->lastNode = FltStackPop( flt->stack );
 
-	flt->treeDepth--;
+		if( debug ) {
+			if( FLT_GETPARENT(flt) == NULL )
+				printf("Popping: At top level.\n" );
+			else
+				printf("Popping: '%s' is new parent.\t", 
+																fltSafeNodeName( FLT_GETPARENT(flt) ) );
 
+			printf("lastNode: %s\n", fltSafeNodeName( flt->lastNode ) );
+		}
+
+		flt->treeDepth--;
+	}
 	return NULL;
 }
 
