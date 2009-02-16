@@ -6,5 +6,5 @@ includedir=@includedir@
 Name: FLTLIB Library
 Description: Library for opening OpenFlight 3D model files
 Version: @VERSION@
-Libs: -L${libdir} -lflt
+Libs: -L${libdir} -lm -lflt
 Cflags: -I${includedir}
