@@ -11,8 +11,8 @@ dnl Set various version strings - taken gratefully from the GTk sources
 # if backwards compatibility has been broken,
 # set BINARY_AGE and INTERFACE_AGE to 0.
 
-MAJOR_VERSION=0
-MINOR_VERSION=7
+MAJOR_VERSION=1
+MINOR_VERSION=0
 MICRO_VERSION=0
 INTERFACE_AGE=0
 BINARY_AGE=0
