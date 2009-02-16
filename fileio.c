@@ -29,7 +29,7 @@
 #include "zmalloc.h"
 
 int
-fltReadRecordAttr( FltFile * flt, uint16 * type, uint16 * length )
+fltReadRecordAttr( FltFile * flt, uint16 * type, uint32 * length )
 {
 	int result;
 	uint16 ltype, llength;
@@ -38,6 +38,9 @@ fltReadRecordAttr( FltFile * flt, uint16 * type, uint16 * length )
 	assert( flt );
 	assert( type );
 	assert( length );
+
+	*type = 0;
+	*length = 0;
 
 	if( fread( &ltype, 1, sizeof( uint16 ), flt->stdFile ) != sizeof(uint16) )
 		// eof
@@ -95,7 +98,7 @@ fltReadRecordAttr( FltFile * flt, uint16 * type, uint16 * length )
 		llength -= 4;
 
 	*type = ltype;
-	*length = llength;
+	*length += llength;
 
 	// read the block into memory
 	bufPtr = FltBufferResize( flt->buffer, llength );
@@ -123,16 +126,114 @@ fltReadRecordAttr( FltFile * flt, uint16 * type, uint16 * length )
 	}
 
 	flt->byteOffset += llength;
+	
+	/*
+	OpenFlight records have a length field.  This field is 16 bits long, which 
+	means that a flt record can be 2^16 bytes long.  All of the fixed-length 
+	flt records fit within this limit, but some records are variable-length 
+	and can exceed this limit.  The solution that multigen came up with is the 
+	"continuation" record.  If a variable length record exceeds 2^16 bytes, 
+	then the remainder of the record is placed in one or more continuation 
+	records, which directly follow the original record.  
+	
+	The openflight documentation says that although any flt record can make use 
+	of a continuation record, only a few variable-length record types are 
+	likely to be continued.  This code implements continuation records at a 
+	low level, for all record types.  This approach is more robust than 
+	implementing continuation on a case-by-case basis.
+	
+	To reconstruct the original record, a flt reader must concatenate the 
+	first record and all of its associated continuation records.  This 
+	concatenation is performed below.
+	*/
+	
+	// read in all the continuation records that follow this record
+	while( 1 )
+	{
+		// peek at the next record
+		if( fread( &ltype, 1, sizeof( uint16 ), flt->stdFile ) == sizeof(uint16) )
+		{
+			ENDIAN_16( ltype );
+			if( ltype == FLTRECORD_CONTINUATION )
+			{
+				unsigned int prevLength = 0;
+				
+				flt->byteOffset += sizeof( uint16 );
+			
+				// length of continuation record
+				if( fread( &llength, 1, sizeof( uint16), flt->stdFile ) != sizeof(uint16) )
+					// eof
+					break;
+			
+				ENDIAN_16( llength );
+				flt->byteOffset += sizeof( uint16 );
+				
+				// for header
+				if( llength )
+					llength -= 4;
+				
+				// remember current length of buffer, before resizing
+				prevLength = *length;
+				*length += llength;
+				bufPtr = FltBufferResize( flt->buffer, *length );
+				
+				// The next block should be copied into the buffer just after 
+				// the existing data.  Pointer arithmetic.
+				bufPtr = bufPtr + prevLength;
+				
+				result = fread( bufPtr, 1, llength, flt->stdFile );
+				if( result != llength )
+				{
+					printf("FLT: Unexpected EOF: Type: %d Attempted: %d Actual: %d Off: %x\n",
+						ltype, llength, result, flt->byteOffset );
+					printf("FLT: %04x %04x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
+						ltype & 0xffff,
+						llength & 0xffff,
+						bufPtr[0]&0xff,
+						bufPtr[1]&0xff,
+						bufPtr[2]&0xff,
+						bufPtr[3]&0xff,
+						bufPtr[4]&0xff,
+						bufPtr[5]&0xff,
+						bufPtr[6]&0xff,
+						bufPtr[7]&0xff,
+						bufPtr[8]&0xff,
+						bufPtr[9]&0xff );
+				}
+				flt->byteOffset += llength;
+				
+			}
+			else
+			{
+				// some other record type, not a continuation
 
-	FltBufferResetWithLength( flt->buffer, llength );
+				// rewind the file stream; push back the record type
+				fseek( flt->stdFile, -1 * sizeof( uint16 ), SEEK_CUR );
+				// fixme - check for error for fseek
+				
+				break;
+			}
+		}
+		else
+		{
+			// eof
+			break;
+		}
+	}
+
+	FltBufferResetWithLength( flt->buffer, *length );
 
 	return 1;
 }
 
 void
-fltSkipRecord( FltFile * flt, uint16 length )
+fltSkipRecord( FltFile * flt, uint32 length )
 {
 	assert( flt );
+	
+	// this is a no-op holdover.  fltlib used to read records in a piecemeal 
+	// fashion.  this is no longer the case.  fltlib now reads whole records 
+	// into memory.
 
 //	return fseek( flt->stdFile, length, SEEK_CUR ) + 1;
 }

@@ -2155,7 +2155,7 @@ static FltRecord FlightRecords[] = {
 	{ 104, "Reserved", NULL }, 
 	{ 105, "Bounding Sphere", NULL }, 
 	{ 106, "Bounding Cylinder", NULL }, 
-	{ 107, "Reserved", NULL }, 
+	{ 107, "Bounding Convex Hull", NULL }, 
 	{ 108, "Bounding Volume Center", NULL }, 
 	{ 109, "Bounding Volume Orientation", NULL }, 
 	{ 111, "Light Point", fltLightPoint, FltLightPointEntryName }, 
@@ -2286,11 +2286,16 @@ fltPostProcess( FltFile * flt )
 int
 fltParse( FltFile * flt, uint32 skip )
 {
-	uint16 length, type;
+	uint32 length;
+	uint16 type;
 	FltRecord * rec;
 
-	while( fltReadRecordAttr( flt, &type, &length ) ) 
-  {
+	while( 1 ) 
+	{
+		uint32 prevByteOffset = flt->byteOffset;
+		if( !fltReadRecordAttr( flt, &type, &length ) )
+			break;
+		
 		rec = (FltRecord *) bsearch(	&type, 
 																	FlightRecords, 
 																	FLTRECORDS_NUM,
@@ -2330,7 +2335,7 @@ fltParse( FltFile * flt, uint32 skip )
 					node->parent = FLT_GETPARENT( flt );
 
 					// note: we want the byte-offset for the start of record
-					node->byteOffset = flt->byteOffset - length - 4;
+					node->byteOffset = prevByteOffset;
 
 					if( FLTNODE_ISATTRIBUTE( node->type ) ) {
 

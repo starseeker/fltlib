@@ -247,6 +247,8 @@ typedef struct _FltHeader {
 	real64	earthMinorAxis;
 } FltHeader;
 
+#define FLTRECORD_CONTINUATION 23
+
 typedef enum {
 	FVHAS_NORMAL =	(1<<0),
 	FVHAS_COLOR = 	(1<<1),
@@ -1183,7 +1185,7 @@ typedef struct _FltFile {
 
 #define FLT_GETPARENT(f) ( FltStackGetCurrent(f->stack) )
 
-#define FLTRECORDFUNC_ARGLIST FltFile * flt, uint16 recLength
+#define FLTRECORDFUNC_ARGLIST FltFile * flt, uint32 recLength
 #define FLTPOSTPROCESSFUNC_ARGLIST FltFile * flt, FltNode * node
 #define FLTRECORDUSERCALLBACK_ARGLIST FltFile *flt, void *recData, void *userData
 
@@ -1319,8 +1321,8 @@ FLTLIB_API void fltSetFileID( FltFile * flt, uint32 value );
 FLTLIB_API uint32 fltGetFileID( FltFile * flt );
 
 // private
-FLTLIB_API int fltReadRecordAttr( FltFile * flt, uint16 * type, uint16 * length );
-FLTLIB_API void fltSkipRecord( FltFile * flt, uint16 length );
+FLTLIB_API int fltReadRecordAttr( FltFile * flt, uint16 * type, uint32 * length );
+FLTLIB_API void fltSkipRecord( FltFile * flt, uint32 length );
 
 FLTLIB_API void * FltBufferResize( FltBuffer *, uint32 size );
 FLTLIB_API void FltBufferRewind( FltBuffer * );
