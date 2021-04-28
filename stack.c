@@ -27,63 +27,73 @@
 #include "flt.h"
 #include "zmalloc.h"
 
-void 
+void
 FltStackPush( FltStack * stack, void * entry )
 {
-	assert( stack );
+    assert( stack );
 
-	if( stack->stackPtr >= stack->stackSize ) {
-		// alloc an additional 10 entries
-		stack->stack = zrealloc( stack->stack, (stack->stackSize + 10) * 
-																								sizeof( void * ) );
-		stack->stackSize += 10;
-	}
+    if( stack->stackPtr >= stack->stackSize ) {
+	// alloc an additional 10 entries
+	stack->stack = zrealloc( stack->stack, (stack->stackSize + 10) *
+		sizeof( void * ) );
+	stack->stackSize += 10;
+    }
 
-	stack->stack[ stack->stackPtr++ ] = entry;
+    stack->stack[ stack->stackPtr++ ] = entry;
 }
 
-void * 
+void *
 FltStackPop( FltStack * stack )
 {
-	assert( stack );
-	assert( stack->stackPtr ); // check for underrun
+    assert( stack );
+    assert( stack->stackPtr ); // check for underrun
 
-	return stack->stack[ --stack->stackPtr ];
+    return stack->stack[ --stack->stackPtr ];
 }
 
-void * 
+void *
 FltStackGetCurrent( FltStack * stack )
 {
-	assert( stack );
-//	assert( stack->stackPtr ); // check for underrun
+    assert( stack );
+    //	assert( stack->stackPtr ); // check for underrun
 
-	if( stack->stackPtr )
-		return stack->stack[ (stack->stackPtr-1) ];
-	else	
-		return NULL;
+    if( stack->stackPtr )
+	return stack->stack[ (stack->stackPtr-1) ];
+    else
+	return NULL;
 }
 
-void * 
+void *
 FltStackAlloc( FltFile * flt )
 {
-	assert( flt );
+    assert( flt );
 
-	flt->stack = zcalloc( 1, sizeof( FltStack ) );
+    flt->stack = zcalloc( 1, sizeof( FltStack ) );
 
-	// start it off with 10 entries
-	flt->stack->stack = zrealloc( 0, 10 * sizeof( void * ) );
-	flt->stack->stackSize = 10;
+    // start it off with 10 entries
+    flt->stack->stack = zrealloc( 0, 10 * sizeof( void * ) );
+    flt->stack->stackSize = 10;
 
-	return flt->stack;
+    return flt->stack;
 }
 
 void
 FltStackFree( FltFile * flt )
 {
-	if( flt->stack ) {
-		if( flt->stack->stack )
-			zfree( flt->stack->stack );
-		zfree( flt->stack );
-	}
+    if( flt->stack ) {
+	if( flt->stack->stack )
+	    zfree( flt->stack->stack );
+	zfree( flt->stack );
+    }
 }
 
+
+/*
+ * Local Variables:
+ * tab-width: 8
+ * mode: C
+ * indent-tabs-mode: t
+ * c-file-style: "stroustrup"
+ * End:
+ * ex: shiftwidth=4 tabstop=8
+ */

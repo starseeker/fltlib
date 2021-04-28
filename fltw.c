@@ -27,34 +27,44 @@
 int
 main( int argc, char **argv )
 {
-	FILE * fltOut = fopen( "tst.flt", "w" );
-	FltHeader * header = fltBuildHeader();
-	FltExternalReference * extref = fltBuildExternalReference( "extref.flt" );
-	FltMatrix * mat = fltBuildMatrix( 0, 0, 0, 0, 0, 0 );
-	FltMatrix * mat2 = fltBuildMatrix( 200, 0, 0, 3.141592, 0, 0 );
+    FILE * fltOut = fopen( "tst.flt", "w" );
+    FltHeader * header = fltBuildHeader();
+    FltExternalReference * extref = fltBuildExternalReference( "extref.flt" );
+    FltMatrix * mat = fltBuildMatrix( 0, 0, 0, 0, 0, 0 );
+    FltMatrix * mat2 = fltBuildMatrix( 200, 0, 0, 3.141592, 0, 0 );
 
-	// first, write header
-	fltWriteHeader( fltOut, header );
-	
-	// push level
-	fltWritePushLevel( fltOut );
+    // first, write header
+    fltWriteHeader( fltOut, header );
 
-	// then reference
-	fltWriteExternalReference( fltOut, extref );
+    // push level
+    fltWritePushLevel( fltOut );
 
-	// then matrix attr
-	fltWriteMatrix( fltOut, mat );
+    // then reference
+    fltWriteExternalReference( fltOut, extref );
 
-	// then second reference
-	fltWriteExternalReference( fltOut, extref );
+    // then matrix attr
+    fltWriteMatrix( fltOut, mat );
 
-	// then second matrix attr
-	fltWriteMatrix( fltOut, mat2 );
+    // then second reference
+    fltWriteExternalReference( fltOut, extref );
 
-	// pop level
-	fltWritePopLevel( fltOut );
+    // then second matrix attr
+    fltWriteMatrix( fltOut, mat2 );
 
-	fclose( fltOut );
+    // pop level
+    fltWritePopLevel( fltOut );
 
-	return 0;
+    fclose( fltOut );
+
+    return 0;
 }
+
+/*
+ * Local Variables:
+ * tab-width: 8
+ * mode: C
+ * indent-tabs-mode: t
+ * c-file-style: "stroustrup"
+ * End:
+ * ex: shiftwidth=4 tabstop=8
+ */

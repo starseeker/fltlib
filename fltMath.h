@@ -22,7 +22,7 @@
 
 /*
  * OpenFlight Parser
- * 
+ *
  * Author: Mike Morrison
  *         morrison@users.sourceforge.net
  */
@@ -36,14 +36,14 @@
 extern "C" {
 #endif
 
-FLTLIB_API void FltMatrixLoadIdentity( FltMatrix * mat );
-FLTLIB_API void FltBuildMatrix( FltMatrix * mat, real32 x, real32 y, real32 z, 
-                            real32 h, real32 p, real32 r );
-FLTLIB_API void FltMatrixMultiply( FltMatrix * first, FltMatrix * second );
-FLTLIB_API void FltMatrixCopy( FltMatrix * dest, FltMatrix * src );
-FLTLIB_API void FltMatrixVertMultiply( float vert[3], FltMatrix * mat );
-FLTLIB_API void FltMatrixInverseTranspose( FltMatrix * mat );
-FLTLIB_API void FltMatrixNormMultiply( float vert[3], FltMatrix * mat );
+    FLTLIB_API void FltMatrixLoadIdentity( FltMatrix * mat );
+    FLTLIB_API void FltBuildMatrix( FltMatrix * mat, real32 x, real32 y, real32 z,
+	    real32 h, real32 p, real32 r );
+    FLTLIB_API void FltMatrixMultiply( FltMatrix * first, FltMatrix * second );
+    FLTLIB_API void FltMatrixCopy( FltMatrix * dest, FltMatrix * src );
+    FLTLIB_API void FltMatrixVertMultiply( float vert[3], FltMatrix * mat );
+    FLTLIB_API void FltMatrixInverseTranspose( FltMatrix * mat );
+    FLTLIB_API void FltMatrixNormMultiply( float vert[3], FltMatrix * mat );
 
 #ifdef __cplusplus
 }
@@ -51,3 +51,13 @@ FLTLIB_API void FltMatrixNormMultiply( float vert[3], FltMatrix * mat );
 
 
 #endif /* _FLTMATH_H_ */
+
+/*
+ * Local Variables:
+ * tab-width: 8
+ * mode: C
+ * indent-tabs-mode: t
+ * c-file-style: "stroustrup"
+ * End:
+ * ex: shiftwidth=4 tabstop=8
+ */

@@ -22,7 +22,7 @@
 
 /*
  * OpenFlight Parser
- * 
+ *
  * Author: Mike Morrison
  *         morrison@users.sourceforge.net
  */
@@ -40,7 +40,7 @@
 #  define FLTLIB_API __declspec(dllimport)
 # endif
 #else
-# define FLTLIB_API 
+# define FLTLIB_API
 #endif
 
 #ifdef __cplusplus
@@ -49,16 +49,16 @@ extern "C" {
 
 #include <stdio.h>
 
-typedef unsigned char uint8;
-typedef unsigned short uint16;
-typedef unsigned int uint32;
-typedef signed char int8;
-typedef signed short int16;
-typedef signed int int32;
-typedef float real32;
-typedef double real64;
+    typedef unsigned char uint8;
+    typedef unsigned short uint16;
+    typedef unsigned int uint32;
+    typedef signed char int8;
+    typedef signed short int16;
+    typedef signed int int32;
+    typedef float real32;
+    typedef double real64;
 
-typedef enum {
+    typedef enum {
 	FLT_TYPE_NULL	= 0x00,
 	FLT_UNKNOWN	= 0x01,
 	FLT_UINT8 	= 0x02,
@@ -73,31 +73,31 @@ typedef enum {
 	FLT_POINTER	= 0x0400,
 	FLT_POINTER2	= 0x0800,
 	FLT_CHAR	= 0x1000
-} FltType;
+    } FltType;
 
 #ifndef MAX_PATHLEN
 #define MAX_PATHLEN 256
 #endif
 
-/* macros for endian swapping ptr to ptr */
+    /* macros for endian swapping ptr to ptr */
 #define _ENDIAN_16( a, b )	((uint8*)(a))[0] = ((uint8*)(b))[1], \
-														((uint8*)(a))[1] = ((uint8*)(b))[0];
+    ((uint8*)(a))[1] = ((uint8*)(b))[0];
 
 #define _ENDIAN_32( a, b )	((uint8*)(a))[0] = ((uint8*)(b))[3], \
-														((uint8*)(a))[1] = ((uint8*)(b))[2], \
-														((uint8*)(a))[2] = ((uint8*)(b))[1], \
-														((uint8*)(a))[3] = ((uint8*)(b))[0];
+    ((uint8*)(a))[1] = ((uint8*)(b))[2], \
+    ((uint8*)(a))[2] = ((uint8*)(b))[1], \
+    ((uint8*)(a))[3] = ((uint8*)(b))[0];
 
 #define _ENDIAN_64( a, b )	((uint8*)(a))[0] = ((uint8*)(b))[7], \
-														((uint8*)(a))[1] = ((uint8*)(b))[6], \
-														((uint8*)(a))[2] = ((uint8*)(b))[5], \
-														((uint8*)(a))[3] = ((uint8*)(b))[4], \
-														((uint8*)(a))[4] = ((uint8*)(b))[3], \
-														((uint8*)(a))[5] = ((uint8*)(b))[2], \
-														((uint8*)(a))[6] = ((uint8*)(b))[1], \
-														((uint8*)(a))[7] = ((uint8*)(b))[0];
+    ((uint8*)(a))[1] = ((uint8*)(b))[6], \
+    ((uint8*)(a))[2] = ((uint8*)(b))[5], \
+    ((uint8*)(a))[3] = ((uint8*)(b))[4], \
+    ((uint8*)(a))[4] = ((uint8*)(b))[3], \
+    ((uint8*)(a))[5] = ((uint8*)(b))[2], \
+    ((uint8*)(a))[6] = ((uint8*)(b))[1], \
+    ((uint8*)(a))[7] = ((uint8*)(b))[0];
 
-/////// taken from SGL sgldb/sgldb.h
+    /////// taken from SGL sgldb/sgldb.h
 
 #if defined(linux)
 #include <endian.h>
@@ -105,7 +105,7 @@ typedef enum {
 #include <sys/byteorder.h>
 #endif
 
-// are there no WIN32 big-endian targets, or vxworks little endian?
+    // are there no WIN32 big-endian targets, or vxworks little endian?
 
 #if defined(WIN32) || defined(_WIN32) || (defined(sgi) && defined(unix) && defined(_MIPSEL)) || (defined(sun) && defined(unix) && !defined(_BIG_ENDIAN)) || (defined(__BYTE_ORDER) && (__BYTE_ORDER == __LITTLE_ENDIAN)) || (defined(__APPLE__) && defined(__LITTLE_ENDIAN__)) || (defined( _PowerMAXOS ) && (BYTE_ORDER == LITTLE_ENDIAN ))
 #  define FLTLIB_LITTLE_ENDIAN
@@ -115,7 +115,7 @@ typedef enum {
 #  error unknown endian type
 #endif
 
-/////////////////////
+    /////////////////////
 
 #ifdef FLTLIB_LITTLE_ENDIAN
 #define ENDIAN_16( d ) { uint16 tmp; _ENDIAN_16( &tmp, &(d) ); (d) = tmp; }
@@ -124,14 +124,14 @@ typedef enum {
 #define ENDIAN_64( d ) { real64 tmp; _ENDIAN_64( &tmp, &(d) ); (d) = tmp; }
 #define ENDIAN_64r( d ) { real64 tmp; _ENDIAN_64( &tmp, &(d) ); (d) = tmp; }
 #else
-#define ENDIAN_16( d ) 
+#define ENDIAN_16( d )
 #define ENDIAN_32( d )
 #define ENDIAN_32r( d )
 #define ENDIAN_64( d )
 #define ENDIAN_64r( d )
 #endif
 
-typedef struct _FltNode {
+    typedef struct _FltNode {
 	uint32 type;
 	uint32 length;
 	uint32 treeDepth;
@@ -141,16 +141,16 @@ typedef struct _FltNode {
 	struct _FltNode ** child;
 	struct _FltNode * attr;
 	uint32 numChildren;
-} FltNode;
+    } FltNode;
 
-// coord nodes
+    // coord nodes
 #define FLT_COORDS_METERS 0
 #define FLT_COORDS_KILOMETERS 1
 #define FLT_COORDS_FEET 4
 #define FLT_COORDS_INCHES 5
 #define FLT_COORDS_NAUTICALMILES 8
 
-// projections
+    // projections
 #define FLT_PROJECTION_FLATEARTH 0
 #define FLT_PROJECTION_TRAPEZOIDAL 1
 #define FLT_PROJECTION_ROUNDEARTH 2
@@ -159,7 +159,7 @@ typedef struct _FltNode {
 #define FLT_PROJECTION_GEOCENTRIC 5
 #define FLT_PROJECTION_GEODETIC 6
 
-// ellipsoids
+    // ellipsoids
 #define FLT_ELLIPSOID_WGS84 0
 #define FLT_ELLIPSOID_WGS72 1
 #define FLT_ELLIPSOID_BESSEL 2
@@ -167,25 +167,25 @@ typedef struct _FltNode {
 #define FLT_ELLIPSOID_NAD27 4
 #define FLT_ELLIPSOID_USER 5
 
-// flags
+    // flags
 #define FLTHDRFLAGS_SAVE_VTX_NORMALS (1<<(31-0))
 #define FLTHDRFLAGS_RGB_COLOR        (1<<(31-1))  // 'RGB Mode'
 #define FLTHDRFLAGS_CADVIEW_MODE     (1<<(31-2))
 
 #define FLTRECORD_HEADER 1
 
-// macros to help parsing differences
-// note - this actually checks to see if we are < 15.4 because there were
-// most changes between 14.2/15.0 and 15.41, and then after 16.0
+    // macros to help parsing differences
+    // note - this actually checks to see if we are < 15.4 because there were
+    // most changes between 14.2/15.0 and 15.41, and then after 16.0
 #define FLT_IS_V13X(_ff) ( (_ff)->header->formatRevision < 1420 )
 #define FLT_IS_V14X(_ff) ( ((_ff)->header->formatRevision < 1541) && \
-                           ((_ff)->header->formatRevision > 1410) )
+	((_ff)->header->formatRevision > 1410) )
 #define FLT_IS_V15X(_ff) ( ((_ff)->header->formatRevision < 1600) && \
-                           ((_ff)->header->formatRevision > 1540) )
+	((_ff)->header->formatRevision > 1540) )
 #define FLT_IS_V16X(_ff) ( ((_ff)->header->formatRevision < 1700) && \
-                           ((_ff)->header->formatRevision > 1599) )
+	((_ff)->header->formatRevision > 1599) )
 
-typedef struct _FltHeader {
+    typedef struct _FltHeader {
 	FltNode node;
 	char		ID[8];
 	uint32	formatRevision;
@@ -245,15 +245,15 @@ typedef struct _FltHeader {
 	uint32	reserved9;
 	real64	earthMajorAxis;
 	real64	earthMinorAxis;
-} FltHeader;
+    } FltHeader;
 
 #define FLTRECORD_CONTINUATION 23
 
-typedef enum {
+    typedef enum {
 	FVHAS_NORMAL =	(1<<0),
 	FVHAS_COLOR = 	(1<<1),
 	FVHAS_TEXTURE = (1<<2)
-} FltVertexFlags;
+    } FltVertexFlags;
 
 #define FVSTART_HARD_EDGE (1<<(15-0))
 #define FVNORMAL_FROZEN		(1<<(15-1))
@@ -265,7 +265,7 @@ typedef enum {
 #define FLTRECORD_VERTEXCNUV 70		// with color + normal + uv tex
 #define FLTRECORD_VERTEXCUV 71		// with color + uv tex
 
-typedef struct _FltVertex {
+    typedef struct _FltVertex {
 	FltNode node;
 	uint16 colorNameIndex;
 	uint16 flags;
@@ -278,35 +278,35 @@ typedef struct _FltVertex {
 	uint32 indx;
 	uint32 mtMask;									// multitexture mask (not in spec)
 	real32 mtU[7], mtV[7];					// multitexture UV if available
-																	// max of 7
-} FltVertex;
+	// max of 7
+    } FltVertex;
 
-#define FLTRECORD_LIGHTPOINT 111 
-#define FLTRECORD_INDEXEDLIGHTPOINT 130 
+#define FLTRECORD_LIGHTPOINT 111
+#define FLTRECORD_INDEXEDLIGHTPOINT 130
 
-typedef struct _FltLightPoint {
+    typedef struct _FltLightPoint {
 	FltNode node;
 	char ID[8];       // we only support the name for the moment!!
-} FltLightPoint;
+    } FltLightPoint;
 
-#define FLTRECORD_LIGHTPOINTSYSTEM 131 
+#define FLTRECORD_LIGHTPOINTSYSTEM 131
 
 #define FLTLPS_ANIM_ON       0
 #define FLTLPS_ANIM_OFF      1
 #define FLTLPS_ANIM_RAND     2
 #define FLTLPS_FLAGS_ENABLED (1<<(31-0))
 
-typedef struct _FltLightPointSystem {
+    typedef struct _FltLightPointSystem {
 	FltNode node;
-	char ID[8];       
-  real32 intensity;
-  uint32 animationState;
-  uint32 flags;
-} FltLightPointSystem;
+	char ID[8];
+	real32 intensity;
+	uint32 animationState;
+	uint32 flags;
+    } FltLightPointSystem;
 
 #define FLTRECORD_SWITCH 96
 
-typedef struct _FltSwitch {
+    typedef struct _FltSwitch {
 	FltNode node;
 	char ID[8];
 	uint32 reserved0;
@@ -314,23 +314,23 @@ typedef struct _FltSwitch {
 	uint32 numUInt32sPerMask;
 	uint32 numMasks;
 	uint32 * masks; // = numUInt32sPerMask * numMasks * 4
-} FltSwitch;
+    } FltSwitch;
 
 #define FLTRECORD_COMMENT 31
 #define FLTRECORD_COMMENT_MAX_LEN 256
 
-typedef struct _FltComment {
+    typedef struct _FltComment {
 	FltNode node;
 	char text[FLTRECORD_COMMENT_MAX_LEN];
-} FltComment;
+    } FltComment;
 
 #define FLTRECORD_LONGID 33
 #define FLTRECORD_LONGID_MAX_LEN 64
 
-typedef struct _FltLongID {
+    typedef struct _FltLongID {
 	FltNode node;
 	char text[FLTRECORD_LONGID_MAX_LEN];
-} FltLongID;
+    } FltLongID;
 
 #define FLTRECORD_DOF 14
 
@@ -344,7 +344,7 @@ typedef struct _FltLongID {
 #define FLTDOF_LIMITSCALEY	(1<<(31-7))
 #define FLTDOF_LIMITSCALEZ	(1<<(31-8))
 
-typedef struct _FltDOF {
+    typedef struct _FltDOF {
 	FltNode node;
 	char ID[8];
 	uint32 reserved0;
@@ -407,14 +407,14 @@ typedef struct _FltDOF {
 	real64 localIncScaleX;
 
 	uint32 flags;
-} FltDOF;
+    } FltDOF;
 
 #define FLTLOD_USEPREVSLANT (1<<(31-0))
 #define FLTLOD_FREEZECENTER (1<<(31-2))
 
 #define FLTRECORD_LOD 73
 
-typedef struct _FltLOD {
+    typedef struct _FltLOD {
 	FltNode node;
 	char ID[8];
 	uint32 reserved0;
@@ -427,7 +427,7 @@ typedef struct _FltLOD {
 	real64 centerY;
 	real64 centerZ;
 	real64 transitionRange;
-} FltLOD;
+    } FltLOD;
 
 #define FLTRECORD_TEXTUREMAPPINGPALETTE 112
 
@@ -439,21 +439,21 @@ typedef struct _FltLOD {
 #define FLTTMAPPALETTE_TYPE_RADIALPROJ 5
 #define FLTTMAPPALETTE_TYPE_ENVIRONMENTMAP 6
 
-typedef struct _FltTextureMappingPaletteEntry {
-  FltNode node;
-  char ID[20];                // out of order
-  uint32 reserved;
-  uint32 index;
-  uint32 type;
+    typedef struct _FltTextureMappingPaletteEntry {
+	FltNode node;
+	char ID[20];                // out of order
+	uint32 reserved;
+	uint32 index;
+	uint32 type;
 	uint32 warped;
-  // ignore the rest
-} FltTextureMappingPaletteEntry;
+	// ignore the rest
+    } FltTextureMappingPaletteEntry;
 
-typedef struct _FltTextureMappingPalette {
+    typedef struct _FltTextureMappingPalette {
 	FltNode node;
 	uint32 numMappings;
 	FltTextureMappingPaletteEntry ** mappings;
-} FltTextureMappingPalette;
+    } FltTextureMappingPalette;
 
 #define FLTRECORD_SHADERPALETTE 133
 
@@ -461,59 +461,59 @@ typedef struct _FltTextureMappingPalette {
 #define FLTSHADER_CGFX 1
 #define FLTSHADER_GLSL 2
 
-typedef struct _FltShader {
-  FltNode node;
-  char ID[1024];                    // out of place, but fits
-  uint32 index;
-  uint32 type;
-  // cg shaders only for now
-  char  vertexProgramFile[1024];
-  char  fragmentProgramFile[1024];
-  uint32  vertexProgramProfile;
-  uint32  fragmentProgramProfile;
-  char  vertexProgramEntry[256];
-  char  fragmentProgramEntry[256];
-} FltShader;
+    typedef struct _FltShader {
+	FltNode node;
+	char ID[1024];                    // out of place, but fits
+	uint32 index;
+	uint32 type;
+	// cg shaders only for now
+	char  vertexProgramFile[1024];
+	char  fragmentProgramFile[1024];
+	uint32  vertexProgramProfile;
+	uint32  fragmentProgramProfile;
+	char  vertexProgramEntry[256];
+	char  fragmentProgramEntry[256];
+    } FltShader;
 
-typedef struct _FltShaderPalette {
+    typedef struct _FltShaderPalette {
 	FltNode node;
 	uint32 numShaders;
 	FltShader ** shaders;
-} FltShaderPalette;
+    } FltShaderPalette;
 
 #define FLTRECORD_LINESTYLEPALETTE 97
 
-typedef struct _FltLineStyle {
-  FltNode node;
-  uint16 index;
-  uint16 patternMask;
-  uint32 lineWidth;
-} FltLineStyle;
+    typedef struct _FltLineStyle {
+	FltNode node;
+	uint16 index;
+	uint16 patternMask;
+	uint32 lineWidth;
+    } FltLineStyle;
 
-typedef struct _FltLineStylePalette {
+    typedef struct _FltLineStylePalette {
 	FltNode node;
 	uint32 numStyles;
 	FltLineStyle ** styles;
-} FltLineStylePalette;
+    } FltLineStylePalette;
 
 #define FLTRECORD_VERTEXPALETTE 67
 
-typedef struct _FltVertexPalette {
+    typedef struct _FltVertexPalette {
 	FltNode node;
 	uint32 numVerts;
 	FltVertex ** verts;
 	uint32 numSearchVerts;						// added to understand how many verts
-																		// were in the initial palette
-} FltVertexPalette;
+	// were in the initial palette
+    } FltVertexPalette;
 
 #define FLTRECORD_VERTEXLIST 72
 
-typedef struct _FltVertexList {
+    typedef struct _FltVertexList {
 	FltNode node;
 	uint32 numVerts;
 	FltVertex ** list;
 	uint32 *indexList;
-} FltVertexList;
+    } FltVertexList;
 
 #define FLTGROUP_FORWARD_ANIM (1<<(31-1))
 #define FLTGROUP_SWING_ANIM (1<<(31-2))
@@ -523,7 +523,7 @@ typedef struct _FltVertexList {
 
 #define FLTRECORD_GROUP 2
 
-typedef struct _FltGroup {
+    typedef struct _FltGroup {
 	FltNode node;
 	char ID[8];
 	uint16 relativePriority;
@@ -535,7 +535,7 @@ typedef struct _FltGroup {
 	uint8  layerCode;
 	uint8  reserved1;
 	uint32 reserved2;
-} FltGroup;
+    } FltGroup;
 
 #define FLTOBJECT_NODISPLAYDAY (1<<(31-0))
 #define FLTOBJECT_NODISPLAYDUSK (1<<(31-1))
@@ -546,7 +546,7 @@ typedef struct _FltGroup {
 
 #define FLTRECORD_OBJECT 4
 
-typedef struct _FltObject {
+    typedef struct _FltObject {
 	FltNode node;
 	char ID[8];
 	uint32 flags;
@@ -556,7 +556,7 @@ typedef struct _FltObject {
 	uint16 specialEffectID2;
 	uint16 significance;
 	uint16 reserved0;
-} FltObject;
+    } FltObject;
 
 #define FLTFACEDT_DRAWSOLIDBACKFACE 0
 #define FLTFACEDT_DRAWSOLIDNOBACKFACE 1
@@ -584,7 +584,7 @@ typedef struct _FltObject {
 #define FLTFACELM_FCVN 2
 #define FLTFACELM_VCVN 3
 
-// format is ABGR
+    // format is ABGR
 #define FLTPACKED_COLOR_R( x ) ( ((x)>> 0) & 0xff )
 #define FLTPACKED_COLOR_G( x ) ( ((x)>> 8) & 0xff )
 #define FLTPACKED_COLOR_B( x ) ( ((x)>>16) & 0xff )
@@ -597,7 +597,7 @@ typedef struct _FltObject {
 
 #define FLTRECORD_FACE 5
 
-typedef struct _FltFace {
+    typedef struct _FltFace {
 	FltNode node;
 	char ID[8];
 	uint32 irColorCode;
@@ -630,43 +630,43 @@ typedef struct _FltFace {
 	uint32 alternateColorIndex;
 	uint16 reserved5;
 	int16 shaderIndex;
-} FltFace;
+    } FltFace;
 
 #define FLTRECORD_TEXTURE 64
 
-typedef struct _FltTexture {
+    typedef struct _FltTexture {
 	FltNode node;
 	char ID[200];
 	uint32 index;
 	uint32 xloc;
 	uint32 yloc;
-} FltTexture;
+    } FltTexture;
 
 #define FLTRECORD_COLORPALETTE 32
 
-typedef struct _FltColorPalette {
+    typedef struct _FltColorPalette {
 	FltNode node;
 	uint32 color[1024];
-} FltColorPalette;
+    } FltColorPalette;
 
 #define FLTRECORD_MATRIX 49
 
-typedef struct _FltMatrix {
+    typedef struct _FltMatrix {
 	FltNode node;
 	real32 matrix[16]; // single precision, row major
 	real32 inverseTranspose[9]; // Convenience - 3x3 inverse transpose for normals
-} FltMatrix;
+    } FltMatrix;
 
 #define FLTRECORD_GENERALMATRIX 94
 
-typedef struct _FltGeneralMatrix {
+    typedef struct _FltGeneralMatrix {
 	FltNode node;
 	real32 matrix[16]; // single precision, row major
-} FltGeneralMatrix;
+    } FltGeneralMatrix;
 
 #define FLTRECORD_NONUNIFORMSCALE 79
 
-typedef struct _FltNonuniformScale {
+    typedef struct _FltNonuniformScale {
 	FltNode node;
 	uint32 reserved;
 	real64 centerX;
@@ -675,11 +675,11 @@ typedef struct _FltNonuniformScale {
 	real32 scaleX;
 	real32 scaleY;
 	real32 scaleZ;
-} FltNonuniformScale;
+    } FltNonuniformScale;
 
 #define FLTRECORD_TRANSLATE 78
 
-typedef struct _FltTranslate {
+    typedef struct _FltTranslate {
 	FltNode node;
 	uint32 reserved;
 	real64 fromX;
@@ -688,55 +688,55 @@ typedef struct _FltTranslate {
 	real64 deltaX;
 	real64 deltaY;
 	real64 deltaZ;
-} FltTranslate;
+    } FltTranslate;
 
 #define FLTRECORD_REPLICATE 60
 
-typedef struct _FltReplicate {
+    typedef struct _FltReplicate {
 	FltNode node;
 	uint16 replications;
 	uint16 reserved;
-} FltReplicate;
+    } FltReplicate;
 
 #define FLTRECORD_ROTATEABOUTPOINT 80
 
-typedef struct _FltRotateAboutPoint {
+    typedef struct _FltRotateAboutPoint {
 	FltNode node;
 	uint32 reserved0;
 	real64 centerX, centerY, centerZ;
 	real32 rotI, rotJ, rotK;
 	real32 rotAngle;
-} FltRotateAboutPoint;
+    } FltRotateAboutPoint;
 
 
 #define FLTRECORD_INSTANCEDEFINITION 62
 
-typedef struct _FltInstanceDefinition {
+    typedef struct _FltInstanceDefinition {
 	FltNode node;
 	uint16 reserved0;
 	uint16 instance;
-} FltInstanceDefinition;
+    } FltInstanceDefinition;
 
 #define FLTRECORD_INSTANCEREFERENCE 61
 
-typedef struct _FltInstanceReference {
+    typedef struct _FltInstanceReference {
 	FltNode node;
 	uint16 reserved0;
 	uint16 instance;
-} FltInstanceReference;
+    } FltInstanceReference;
 
 #define FLTRECORD_BSP 55
 
-typedef struct _FltBSP {
+    typedef struct _FltBSP {
 	FltNode node;
 	char ID[8];
 	uint32 reserved0;
 	real64 coefA, coefB, coefC, coefD;
-} FltBSP;
+    } FltBSP;
 
 #define FLTRECORD_MULTITEXTURE 52
 
-// layer defs
+    // layer defs
 #define FLTMT_HASLAYER1 (1<<(31-0))
 #define FLTMT_HASLAYER2 (1<<(31-1))
 #define FLTMT_HASLAYER3 (1<<(31-2))
@@ -746,38 +746,38 @@ typedef struct _FltBSP {
 #define FLTMT_HASLAYER7 (1<<(31-6))
 #define FLTMT_HASLAYER(x) (1<<(31-((x)-1)))
 
-// effect defs > 100 user defined
+    // effect defs > 100 user defined
 #define FLTMTEFFECT_ENV  0
 #define FLTMTEFFECT_BUMP 1
 
-typedef struct _FltMultiTexture {
+    typedef struct _FltMultiTexture {
 	FltNode node;
 	uint32  mask;
 	struct {
-		uint16  index;
-		uint16  effect;
-		uint16  mapping;
-		uint16  data;
+	    uint16  index;
+	    uint16  effect;
+	    uint16  mapping;
+	    uint16  data;
 	} layer[8];
-} FltMultiTexture;
+    } FltMultiTexture;
 
 #define FLTRECORD_UVLIST 53
 
-typedef struct _FltUVList {
+    typedef struct _FltUVList {
 	FltNode node;
 	uint32  mask;
 	uint32  numValues;			// number of floats in list
 	real32 * uvValues;			// numUVSets floats  interpretation depends on
-													// mask and how many verts are in the vertexlist
-													// that we follow
-} FltUVList;
+	// mask and how many verts are in the vertexlist
+	// that we follow
+    } FltUVList;
 
 #define FLTRECORD_ROADSEGMENT 87
 
-typedef struct _FltRoadSegment {
+    typedef struct _FltRoadSegment {
 	FltNode node;
 	char ID[8];
-} FltRoadSegment;
+    } FltRoadSegment;
 
 #define FLTRECORD_ROADCONSTRUCTION 127
 
@@ -789,7 +789,7 @@ typedef struct _FltRoadSegment {
 #define FLTRCSPIRALTYPE_LINEARANGLE  1
 #define FLTRCSPIRALTYPE_COSINELENGTH 2
 
-typedef struct _FltRoadConstruction {
+    typedef struct _FltRoadConstruction {
 	FltNode node;
 	char ID[8];
 	uint32 reserved0;
@@ -814,14 +814,14 @@ typedef struct _FltRoadConstruction {
 	real64 minimumCurveLength;
 	real64 entrySlope;
 	real64 exitSlope;
-} FltRoadConstruction;
+    } FltRoadConstruction;
 
 #define FLTRECORD_ROADPATH 92
 
 #define FLTRPNORMALTYPE_UPVEC 0
 #define FLTRPNORMALTYPE_HPR   1
 
-typedef struct _FltRoadPath {
+    typedef struct _FltRoadPath {
 	FltNode node;
 	char ID[8];
 	uint32 reserved0;
@@ -830,11 +830,11 @@ typedef struct _FltRoadPath {
 	uint32 noPassing;
 	uint32 vertexNormalType;
 	uint8  spare[480];
-} FltRoadPath;
+    } FltRoadPath;
 
 #define FLTRECORD_MESH 84
 
-typedef struct _FltMesh {
+    typedef struct _FltMesh {
 	FltNode node;
 	char ID[8];
 	int32  irColorCode;
@@ -867,7 +867,7 @@ typedef struct _FltMesh {
 	uint32 alternateColorIndex;
 	int16  reserved5;
 	int16  shaderIndex;
-} FltMesh;
+    } FltMesh;
 
 #define FLTRECORD_LOCALVERTEXPOOL 85
 
@@ -884,7 +884,7 @@ typedef struct _FltMesh {
 #define FLTLVPATTR_UV6         (1<<(31-10))
 #define FLTLVPATTR_UV7         (1<<(31-11))
 
-typedef struct _FltLVPEntry {
+    typedef struct _FltLVPEntry {
 	real64 x, y, z;
 	uint32 color;
 	real32 i, j, k;
@@ -896,14 +896,14 @@ typedef struct _FltLVPEntry {
 	real32 u5,v5;
 	real32 u6,v6;
 	real32 u7,v7;
-} FltLVPEntry;
+    } FltLVPEntry;
 
-typedef struct _FltLocalVertexPool {
+    typedef struct _FltLocalVertexPool {
 	FltNode node;
 	uint32  numVerts;
 	uint32  attrMask;
 	FltLVPEntry * entries;
-} FltLocalVertexPool;
+    } FltLocalVertexPool;
 
 #define FLTRECORD_MESHPRIMITIVE 86
 
@@ -912,18 +912,18 @@ typedef struct _FltLocalVertexPool {
 #define FLTMESHPRIM_QUADSTRIP 3
 #define FLTMESHPRIM_POLYINDEX 4
 
-typedef struct _FltMeshPrimitive {
+    typedef struct _FltMeshPrimitive {
 	FltNode node;
 	uint16  primitiveType;
 	uint16  vertIndexLength;
 	uint32  numVerts;
 	uint32  *indices;
-} FltMeshPrimitive;
+    } FltMeshPrimitive;
 
 
 #define FLTRECORD_MATERIAL 113
 
-typedef struct _FltMaterial {
+    typedef struct _FltMaterial {
 	FltNode node;
 	char ID[12];		// out of order, but matches everything else
 	uint32 index;
@@ -943,17 +943,17 @@ typedef struct _FltMaterial {
 	real32 shininess;		// 0->128.0
 	real32 alpha;				// 0->1.0 1.0 = opaque
 	uint32 spare;
-} FltMaterial;
+    } FltMaterial;
 
-// this record is defined as "obsolete"
+    // this record is defined as "obsolete"
 #define FLTRECORD_MATERIAL_TABLE 66
 
-//
-// Material table defines 64 material types, rather than
-// a configurable number like the later material palette.
-// This struct is used as a reference only.
-//
-typedef struct _FltMaterialTableEntry {
+    //
+    // Material table defines 64 material types, rather than
+    // a configurable number like the later material palette.
+    // This struct is used as a reference only.
+    //
+    typedef struct _FltMaterialTableEntry {
 	real32 ambientRed;
 	real32 ambientGreen;
 	real32 ambientBlue;
@@ -969,34 +969,34 @@ typedef struct _FltMaterialTableEntry {
 	real32 shininess;		// 0->128.0
 	real32 alpha;				// 0->1.0 1.0 = opaque
 	uint32 flags;
-  char   ID[12];
+	char   ID[12];
 	uint32 spare[28];
-} FltMaterialTableEntry;
+    } FltMaterialTableEntry;
 
 #define FLTRECORD_NAME_TABLE 114
 
-typedef struct _FltNameTableEntry {
-  uint32 length;
-  uint16 index;
-  char   name[80];  // max len of 80
-} FltNameTableEntry;
+    typedef struct _FltNameTableEntry {
+	uint32 length;
+	uint16 index;
+	char   name[80];  // max len of 80
+    } FltNameTableEntry;
 
-typedef struct _FltNameTable {
-  FltNode node;
-  uint32 numNames;
-  uint16 nextIndex;
-  FltNameTableEntry ** entries;
-} FltNameTable;
+    typedef struct _FltNameTable {
+	FltNode node;
+	uint32 numNames;
+	uint16 nextIndex;
+	FltNameTableEntry ** entries;
+    } FltNameTable;
 
-typedef struct _FltMaterialPalette {
+    typedef struct _FltMaterialPalette {
 	FltNode node;
 	FltMaterial ** material;
 	uint32 numMaterials;
-} FltMaterialPalette;
+    } FltMaterialPalette;
 
 #define FLTRECORD_EXTERNALREFERENCE 63
 
-// flags bits
+    // flags bits
 #define FLTEXTREF_COLORPALETTE_OVERRIDE (1<<(31-0))
 #define FLTEXTREF_MATERIALPALETTE_OVERRIDE (1<<(31-1))
 #define FLTEXTREF_TEXTUREPALETTE_OVERRIDE (1<<(31-2))
@@ -1006,7 +1006,7 @@ typedef struct _FltMaterialPalette {
 #define FLTEXTREF_LIGHTPOINTPALETTE_OVERRIDE (1<<(31-6))
 #define FLTEXTREF_SHADERPALETTE_OVERRIDE (1<<(31-7))
 
-typedef struct _FltExternalReference {
+    typedef struct _FltExternalReference {
 	FltNode node;
 	char path[200];		// path to extref filename<node name>
 	uint8 reserved0;
@@ -1015,7 +1015,7 @@ typedef struct _FltExternalReference {
 	uint32 flags;
 	uint16 reserved3;
 	uint16 reserved4;
-} FltExternalReference;
+    } FltExternalReference;
 
 #define FLTRECORD_LIGHTSOURCEPALETTEENTRY 102
 
@@ -1023,8 +1023,8 @@ typedef struct _FltExternalReference {
 #define FLTLIGHT_LOCAL    1		// point
 #define FLTLIGHT_SPOT     2		// spot
 
-typedef struct _FltLightSourcePaletteEntry
-{
+    typedef struct _FltLightSourcePaletteEntry
+    {
 	FltNode node;
 	uint32 index;
 	uint32 reserved0[2];
@@ -1037,20 +1037,20 @@ typedef struct _FltLightSourcePaletteEntry
 	uint32 reserved2[10];
 	real32 spotExponent;
 	real32 spotCutoff;
-	real32 yaw; 
+	real32 yaw;
 	real32 pitch;
 	real32 attenC;
 	real32 attenL;
 	real32 attenQ;
 	uint32 activeDuringModeling;
 	real32 reserved3[19];
-} FltLightSourcePaletteEntry;
+    } FltLightSourcePaletteEntry;
 
-typedef struct _FltLightSourcePalette
-{
+    typedef struct _FltLightSourcePalette
+    {
 	FltLightSourcePaletteEntry ** lights;
 	uint32 numLights;
-} FltLightSourcePalette;
+    } FltLightSourcePalette;
 
 #define FLTRECORD_LIGHTSOURCE 101
 
@@ -1058,8 +1058,8 @@ typedef struct _FltLightSourcePalette
 #define FLTRECORD_LSGLOBAL	(1<<(31-1))
 #define FLTRECORD_LSEXPORT	(1<<(31-3))
 
-typedef struct _FltLightSource
-{
+    typedef struct _FltLightSource
+    {
 	FltNode node;
 	char   ID[8];
 	uint32 reserved0;
@@ -1070,31 +1070,31 @@ typedef struct _FltLightSource
 	real64 position[3];		// local or spot only
 	real32 yaw; 					// az - potential override
 	real32 pitch;					// el - potentail override
-} FltLightSource;
+    } FltLightSource;
 
-typedef struct _FltBuffer {
+    typedef struct _FltBuffer {
 	uint8 *buffer;
 	uint8 *curPtr;
 	uint32 bytesRead;
 	uint32 bytesRemaining;
 	uint32 readLength; // length of last read to buffer
 	uint32 bufferSize;	// current total size of buffer
-} FltBuffer;
+    } FltBuffer;
 
-typedef struct _FltStack {
+    typedef struct _FltStack {
 	void ** stack;
 	uint32 stackPtr;
 	uint32 stackSize;
-} FltStack;
+    } FltStack;
 
-typedef struct {
+    typedef struct {
 	char * head, * tail;
 	int last;
-} MStrtokCtxt;
+    } MStrtokCtxt;
 
 #define FLTFILE_FLAGS_FIRSTPUSHSEEN 0x01
 
-typedef struct _FltFile {
+    typedef struct _FltFile {
 	FltNode node;
 	FILE * stdFile;
 	FltHeader * header;
@@ -1114,74 +1114,74 @@ typedef struct _FltFile {
 	uint32 numNodes;
 	uint32 byteOffset;
 	uint32 treeDepth;
-  int32  ignoreExtension;
-  int32  flags;
-  uint32 fileID;
+	int32  ignoreExtension;
+	int32  flags;
+	uint32 fileID;
 	uint32 xformUnits;
 	real64 extents[6];  /* swX, swY, neX, neY */
 	char fileName[MAX_PATHLEN];
 
 	// for path building
 	struct {
-		char * searchPath;
-		int first;
-		MStrtokCtxt stc;
+	    char * searchPath;
+	    int first;
+	    MStrtokCtxt stc;
 	} pathInfo;
-} FltFile;
+    } FltFile;
 
-// add nodes that are attributes here
+    // add nodes that are attributes here
 
 #define FLTNODE_ISATTRIBUTE(xn) ( (xn) == FLTRECORD_COMMENT || \
-																	(xn) == FLTRECORD_MATRIX  || \
-																	(xn) == FLTRECORD_GENERALMATRIX  || \
-																	(xn) == FLTRECORD_NONUNIFORMSCALE  || \
-																	(xn) == FLTRECORD_TRANSLATE  || \
-																	(xn) == FLTRECORD_MULTITEXTURE  || \
-																	(xn) == FLTRECORD_REPLICATE  || \
-																	(xn) == FLTRECORD_UVLIST  || \
-																	(xn) == FLTRECORD_LOCALVERTEXPOOL || \
-																	(xn) == FLTRECORD_LONGID )
+	(xn) == FLTRECORD_MATRIX  || \
+	(xn) == FLTRECORD_GENERALMATRIX  || \
+	(xn) == FLTRECORD_NONUNIFORMSCALE  || \
+	(xn) == FLTRECORD_TRANSLATE  || \
+	(xn) == FLTRECORD_MULTITEXTURE  || \
+	(xn) == FLTRECORD_REPLICATE  || \
+	(xn) == FLTRECORD_UVLIST  || \
+	(xn) == FLTRECORD_LOCALVERTEXPOOL || \
+	(xn) == FLTRECORD_LONGID )
 
-// add nodes that can be a parent node here
+    // add nodes that can be a parent node here
 
 #define FLTNODE_CANPARENT(xn) ( (xn) == FLTRECORD_HEADER || \
-																(xn) == FLTRECORD_SWITCH || \
-																(xn) == FLTRECORD_DOF || \
-																(xn) == FLTRECORD_LOD || \
-																(xn) == FLTRECORD_GROUP || \
-																(xn) == FLTRECORD_OBJECT || \
-																(xn) == FLTRECORD_BSP || \
-                                (xn) == FLTRECORD_LIGHTPOINTSYSTEM || \
-																(xn) == FLTRECORD_MESH || \
-																(xn) == FLTRECORD_ROADPATH || \
-																(xn) == FLTRECORD_ROADCONSTRUCTION || \
-																(xn) == FLTRECORD_INSTANCEDEFINITION || \
-                                (xn) == FLTRECORD_LIGHTPOINT || \
-                                (xn) == FLTRECORD_INDEXEDLIGHTPOINT || \
-																(xn) == FLTRECORD_FACE )
+	(xn) == FLTRECORD_SWITCH || \
+	(xn) == FLTRECORD_DOF || \
+	(xn) == FLTRECORD_LOD || \
+	(xn) == FLTRECORD_GROUP || \
+	(xn) == FLTRECORD_OBJECT || \
+	(xn) == FLTRECORD_BSP || \
+	(xn) == FLTRECORD_LIGHTPOINTSYSTEM || \
+	(xn) == FLTRECORD_MESH || \
+	(xn) == FLTRECORD_ROADPATH || \
+	(xn) == FLTRECORD_ROADCONSTRUCTION || \
+	(xn) == FLTRECORD_INSTANCEDEFINITION || \
+	(xn) == FLTRECORD_LIGHTPOINT || \
+	(xn) == FLTRECORD_INDEXEDLIGHTPOINT || \
+	(xn) == FLTRECORD_FACE )
 
-// add nodes that contain an 'ID' or are named.
+    // add nodes that contain an 'ID' or are named.
 
 #define FLTNODE_HASID(xn) ( (xn) == FLTRECORD_HEADER || \
-														(xn) == FLTRECORD_SWITCH || \
-														(xn) == FLTRECORD_SHADERPALETTE || \
-														(xn) == FLTRECORD_TEXTUREMAPPINGPALETTE || \
-														(xn) == FLTRECORD_LIGHTPOINTSYSTEM || \
-														(xn) == FLTRECORD_LIGHTPOINT || \
-														(xn) == FLTRECORD_INDEXEDLIGHTPOINT || \
-														(xn) == FLTRECORD_DOF || \
-														(xn) == FLTRECORD_LOD || \
-														(xn) == FLTRECORD_GROUP || \
-														(xn) == FLTRECORD_OBJECT || \
-														(xn) == FLTRECORD_MATERIAL || \
-														(xn) == FLTRECORD_BSP || \
-														(xn) == FLTRECORD_ROADPATH || \
-														(xn) == FLTRECORD_ROADCONSTRUCTION || \
-														(xn) == FLTRECORD_ROADSEGMENT || \
-														(xn) == FLTRECORD_MESH || \
-														(xn) == FLTRECORD_LIGHTSOURCE || \
-														(xn) == FLTRECORD_LIGHTSOURCEPALETTEENTRY || \
-														(xn) == FLTRECORD_FACE )
+	(xn) == FLTRECORD_SWITCH || \
+	(xn) == FLTRECORD_SHADERPALETTE || \
+	(xn) == FLTRECORD_TEXTUREMAPPINGPALETTE || \
+	(xn) == FLTRECORD_LIGHTPOINTSYSTEM || \
+	(xn) == FLTRECORD_LIGHTPOINT || \
+	(xn) == FLTRECORD_INDEXEDLIGHTPOINT || \
+	(xn) == FLTRECORD_DOF || \
+	(xn) == FLTRECORD_LOD || \
+	(xn) == FLTRECORD_GROUP || \
+	(xn) == FLTRECORD_OBJECT || \
+	(xn) == FLTRECORD_MATERIAL || \
+	(xn) == FLTRECORD_BSP || \
+	(xn) == FLTRECORD_ROADPATH || \
+	(xn) == FLTRECORD_ROADCONSTRUCTION || \
+	(xn) == FLTRECORD_ROADSEGMENT || \
+	(xn) == FLTRECORD_MESH || \
+	(xn) == FLTRECORD_LIGHTSOURCE || \
+	(xn) == FLTRECORD_LIGHTSOURCEPALETTEENTRY || \
+	(xn) == FLTRECORD_FACE )
 
 #define FLT_GETPARENT(f) ( FltStackGetCurrent(f->stack) )
 
@@ -1189,17 +1189,17 @@ typedef struct _FltFile {
 #define FLTPOSTPROCESSFUNC_ARGLIST FltFile * flt, FltNode * node
 #define FLTRECORDUSERCALLBACK_ARGLIST FltFile *flt, void *recData, void *userData
 
-typedef void * (*FltRecordFunc)( FLTRECORDFUNC_ARGLIST );
-typedef void * (*FltPostProcessFunc)( FLTPOSTPROCESSFUNC_ARGLIST );
-typedef void * (*FltRecordUserCallback)( FLTRECORDUSERCALLBACK_ARGLIST );
+    typedef void * (*FltRecordFunc)( FLTRECORDFUNC_ARGLIST );
+    typedef void * (*FltPostProcessFunc)( FLTPOSTPROCESSFUNC_ARGLIST );
+    typedef void * (*FltRecordUserCallback)( FLTRECORDUSERCALLBACK_ARGLIST );
 
-typedef struct _FltRecordEntryName {
+    typedef struct _FltRecordEntryName {
 	char * type;
 	char * name;
 	uint32 offset;
-} FltRecordEntryName;
+    } FltRecordEntryName;
 
-typedef struct _FltRecord {
+    typedef struct _FltRecord {
 	uint16 opcode;
 	char * name;
 	FltRecordFunc func;
@@ -1207,9 +1207,9 @@ typedef struct _FltRecord {
 	FltPostProcessFunc postProcessFunc;
 	FltRecordUserCallback userFunc;
 	void * userData;
-} FltRecord;
+    } FltRecord;
 
-typedef enum {
+    typedef enum {
 	FLTATTR_MIN_POINT = 0,
 	FLTATTR_MIN_BILINEAR = 1,
 	FLTATTR_MIN_MIPMAP = 2, // obsolete
@@ -1218,10 +1218,10 @@ typedef enum {
 	FLTATTR_MIN_MIPMAP_BILINEAR = 5,
 	FLTATTR_MIN_MIPMAP_TRILINEAR = 6,
 	FLTATTR_MIN_NONE = 7
-	// todo: add others
-} FltAttrMinification;
+	    // todo: add others
+    } FltAttrMinification;
 
-typedef enum {
+    typedef enum {
 	FLTATTR_MAG_POINT = 0,
 	FLTATTR_MAG_BILINEAR = 1,
 	FLTATTR_MAG_NONE = 2,
@@ -1229,25 +1229,25 @@ typedef enum {
 	FLTATTR_MAG_SHARPEN = 4,
 	FLTATTR_MAG_ADD_DETAIL = 5,
 	FLTATTR_MAG_MODULATE_DETAIL = 6
-	// todo: add others
-} FltAttrMagnification;
+	    // todo: add others
+    } FltAttrMagnification;
 
-typedef enum {
+    typedef enum {
 	FLTATTR_REP_REPEAT = 0,
 	FLTATTR_REP_CLAMP = 1,
 	FLTATTR_REP_NONE = 3,
 	FLTATTR_REP_MIRROR = 4
-} FltAttrRepetition;
+    } FltAttrRepetition;
 
-typedef enum {
+    typedef enum {
 	FLTATTR_ENV_MODULATE = 0,
 	FLTATTR_ENV_BLEND = 1,
 	FLTATTR_ENV_DECAL = 2,
 	FLTATTR_ENV_REPLACE = 3,
 	FLTATTR_ENV_ADD = 4
-} FltAttrEnvironment;
+    } FltAttrEnvironment;
 
-typedef struct _FltTxAttributes {
+    typedef struct _FltTxAttributes {
 	uint32 uTexels;
 	uint32 vTexels;
 	uint32 realWorldU;
@@ -1268,97 +1268,97 @@ typedef struct _FltTxAttributes {
 	real64 realWorldSizeU;
 	real64 realWorldSizeV;
 	// skip a bunch
-  uint32 detailTexture;
-  uint32 detailJ, detailK, detailM, detailN;
-  uint32 detailScramble;
+	uint32 detailTexture;
+	uint32 detailJ, detailK, detailM, detailN;
+	uint32 detailScramble;
 	// add others
-} FltTxAttributes;
+    } FltTxAttributes;
 
-// public
-FLTLIB_API FltFile * fltOpen( const char * name );
-FLTLIB_API void fltClose( FltFile *theFile );
-FLTLIB_API void fltFileFree( FltFile *theFile );
-FLTLIB_API int fltParse( FltFile *theFile, uint32 skip );
-FLTLIB_API int fltRegisterRecordUserCallback( uint16 record, FltRecordUserCallback, 
-																														void * userData );
-FLTLIB_API FltRecord * fltRecordGetDefinition( uint16 record );
-FLTLIB_API char * fltNodeName( FltNode * node );
-FLTLIB_API char * fltSafeNodeName( FltNode * node );
-FLTLIB_API void fltDumpNode( FltNode * node );
-FLTLIB_API FltType fltStringToType( char * string );
-FLTLIB_API void fltRecordEntryNameToString( char * string, FltNode * node, 
-																										FltRecordEntryName * e );
-FLTLIB_API uint32 fltLookupColor( FltFile * flt, uint32 colorIndex, real32 *r, 
-																						real32 *g, real32 *b, real32 *a );
-FLTLIB_API FltTexture * fltLookupTexture( FltFile * flt, uint16 indx );
-FLTLIB_API FltMaterial * fltLookupMaterial( FltFile * flt, uint16 indx );
-FLTLIB_API FltLightSourcePaletteEntry * 
+    // public
+    FLTLIB_API FltFile * fltOpen( const char * name );
+    FLTLIB_API void fltClose( FltFile *theFile );
+    FLTLIB_API void fltFileFree( FltFile *theFile );
+    FLTLIB_API int fltParse( FltFile *theFile, uint32 skip );
+    FLTLIB_API int fltRegisterRecordUserCallback( uint16 record, FltRecordUserCallback,
+	    void * userData );
+    FLTLIB_API FltRecord * fltRecordGetDefinition( uint16 record );
+    FLTLIB_API char * fltNodeName( FltNode * node );
+    FLTLIB_API char * fltSafeNodeName( FltNode * node );
+    FLTLIB_API void fltDumpNode( FltNode * node );
+    FLTLIB_API FltType fltStringToType( char * string );
+    FLTLIB_API void fltRecordEntryNameToString( char * string, FltNode * node,
+	    FltRecordEntryName * e );
+    FLTLIB_API uint32 fltLookupColor( FltFile * flt, uint32 colorIndex, real32 *r,
+	    real32 *g, real32 *b, real32 *a );
+    FLTLIB_API FltTexture * fltLookupTexture( FltFile * flt, uint16 indx );
+    FLTLIB_API FltMaterial * fltLookupMaterial( FltFile * flt, uint16 indx );
+    FLTLIB_API FltLightSourcePaletteEntry *
 	fltLookupLightSource( FltFile * flt, uint32 lightIndex );
-FLTLIB_API FltLineStyle * fltLookupLineStyle( FltFile * flt, uint16 idx );
-FLTLIB_API FltShader * fltLookupShader( FltFile * flt, uint32 idx );
-FLTLIB_API FltTextureMappingPaletteEntry * fltLookupTextureMapping( 																													FltFile * flt, uint32 idx );
-FLTLIB_API FltInstanceDefinition * fltLookupInstance( FltFile * flt, uint16 indx );
-FLTLIB_API FltTxAttributes * fltLoadAttributes( const char * file );
-FLTLIB_API void fltFreeAttributes( FltTxAttributes * );
-FLTLIB_API int fltFindFile ( FltFile *, char * inFileName, char *outFileName );
-FLTLIB_API void fltAddSearchPath( FltFile * flt, char * path );
-FLTLIB_API void fltCopySearchPaths( FltFile * to, FltFile * from );
-FLTLIB_API FltNode * fltFindFirstAttrNode( FltNode * node, uint32 type );
-FLTLIB_API int fltGetMultiTextureCount( FltVertexList * vlist );
-FLTLIB_API float * fltGetMultiTextureCoords( FltVertexList * vlist, int idx );
+    FLTLIB_API FltLineStyle * fltLookupLineStyle( FltFile * flt, uint16 idx );
+    FLTLIB_API FltShader * fltLookupShader( FltFile * flt, uint32 idx );
+    FLTLIB_API FltTextureMappingPaletteEntry * fltLookupTextureMapping( 																													FltFile * flt, uint32 idx );
+    FLTLIB_API FltInstanceDefinition * fltLookupInstance( FltFile * flt, uint16 indx );
+    FLTLIB_API FltTxAttributes * fltLoadAttributes( const char * file );
+    FLTLIB_API void fltFreeAttributes( FltTxAttributes * );
+    FLTLIB_API int fltFindFile ( FltFile *, char * inFileName, char *outFileName );
+    FLTLIB_API void fltAddSearchPath( FltFile * flt, char * path );
+    FLTLIB_API void fltCopySearchPaths( FltFile * to, FltFile * from );
+    FLTLIB_API FltNode * fltFindFirstAttrNode( FltNode * node, uint32 type );
+    FLTLIB_API int fltGetMultiTextureCount( FltVertexList * vlist );
+    FLTLIB_API float * fltGetMultiTextureCoords( FltVertexList * vlist, int idx );
 
-FLTLIB_API int fltFinite64( real64 value );
-/* returns swX swY neX neY */
-FLTLIB_API void fltGetExtentsLatLon( FltFile * flt, real64 extents[4] );
-FLTLIB_API void fltGetOriginLatLon( FltFile * flt, real64 origin[2] );
-/* returns swX swY neX neY zMin zMax*/
-FLTLIB_API void fltGetExtents( FltFile * flt, real64 extents[6] );
-FLTLIB_API uint32 fltGetProjection( FltFile * flt );
-FLTLIB_API uint32 fltGetEllipsoidModel( FltFile * flt );
-FLTLIB_API void fltGetUTMZoneAndHemisphere( FltFile * flt, int *z, int *h );
+    FLTLIB_API int fltFinite64( real64 value );
+    /* returns swX swY neX neY */
+    FLTLIB_API void fltGetExtentsLatLon( FltFile * flt, real64 extents[4] );
+    FLTLIB_API void fltGetOriginLatLon( FltFile * flt, real64 origin[2] );
+    /* returns swX swY neX neY zMin zMax*/
+    FLTLIB_API void fltGetExtents( FltFile * flt, real64 extents[6] );
+    FLTLIB_API uint32 fltGetProjection( FltFile * flt );
+    FLTLIB_API uint32 fltGetEllipsoidModel( FltFile * flt );
+    FLTLIB_API void fltGetUTMZoneAndHemisphere( FltFile * flt, int *z, int *h );
 
-FLTLIB_API void fltSetFileID( FltFile * flt, uint32 value );
-FLTLIB_API uint32 fltGetFileID( FltFile * flt );
+    FLTLIB_API void fltSetFileID( FltFile * flt, uint32 value );
+    FLTLIB_API uint32 fltGetFileID( FltFile * flt );
 
-// private
-FLTLIB_API int fltReadRecordAttr( FltFile * flt, uint16 * type, uint32 * length );
-FLTLIB_API void fltSkipRecord( FltFile * flt, uint32 length );
+    // private
+    FLTLIB_API int fltReadRecordAttr( FltFile * flt, uint16 * type, uint32 * length );
+    FLTLIB_API void fltSkipRecord( FltFile * flt, uint32 length );
 
-FLTLIB_API void * FltBufferResize( FltBuffer *, uint32 size );
-FLTLIB_API void FltBufferRewind( FltBuffer * );
-FLTLIB_API void FltBufferResetWithLength( FltBuffer *, uint32 len );
-FLTLIB_API FltBuffer * FltBufferAlloc( FltFile * );
-FLTLIB_API void FltBufferFree( FltFile * flt );
+    FLTLIB_API void * FltBufferResize( FltBuffer *, uint32 size );
+    FLTLIB_API void FltBufferRewind( FltBuffer * );
+    FLTLIB_API void FltBufferResetWithLength( FltBuffer *, uint32 len );
+    FLTLIB_API FltBuffer * FltBufferAlloc( FltFile * );
+    FLTLIB_API void FltBufferFree( FltFile * flt );
 
-FLTLIB_API void * FltStackAlloc( FltFile * );
-FLTLIB_API void FltStackFree( FltFile * flt );
-FLTLIB_API void FltStackPush( FltStack *, void * );
-FLTLIB_API void * FltStackPop( FltStack * );
-FLTLIB_API void * FltStackGetCurrent( FltStack * );
+    FLTLIB_API void * FltStackAlloc( FltFile * );
+    FLTLIB_API void FltStackFree( FltFile * flt );
+    FLTLIB_API void FltStackPush( FltStack *, void * );
+    FLTLIB_API void * FltStackPop( FltStack * );
+    FLTLIB_API void * FltStackGetCurrent( FltStack * );
 
-FLTLIB_API int fltReadBlock( FltFile * flt, void * data, uint32 length );
-FLTLIB_API int fltSkipBlock( FltFile * flt, uint32 len );
-FLTLIB_API uint32 fltReadUInt32( FltFile * flt );
-FLTLIB_API int32 fltReadInt32( FltFile * flt );
-FLTLIB_API uint16 fltReadUInt16( FltFile * flt );
-FLTLIB_API int16 fltReadInt16( FltFile * flt );
-FLTLIB_API uint8 fltReadUInt8( FltFile * flt );
-FLTLIB_API int8 fltReadInt8( FltFile * flt );
-FLTLIB_API real32 fltReadReal32( FltFile * flt );
-FLTLIB_API real64 fltReadReal64( FltFile * flt );
+    FLTLIB_API int fltReadBlock( FltFile * flt, void * data, uint32 length );
+    FLTLIB_API int fltSkipBlock( FltFile * flt, uint32 len );
+    FLTLIB_API uint32 fltReadUInt32( FltFile * flt );
+    FLTLIB_API int32 fltReadInt32( FltFile * flt );
+    FLTLIB_API uint16 fltReadUInt16( FltFile * flt );
+    FLTLIB_API int16 fltReadInt16( FltFile * flt );
+    FLTLIB_API uint8 fltReadUInt8( FltFile * flt );
+    FLTLIB_API int8 fltReadInt8( FltFile * flt );
+    FLTLIB_API real32 fltReadReal32( FltFile * flt );
+    FLTLIB_API real64 fltReadReal64( FltFile * flt );
 
 
-// MISC macros 
+    // MISC macros
 
 #ifndef offsetof
 #define offsetof( structPointer, element ) \
-													(size_t)&( ((structPointer)((void *)0))->element )
+    (size_t)&( ((structPointer)((void *)0))->element )
 #endif
 
 #define elementat( structPointer, theStructPtr, elemType, element ) \
-		*(elemType *)( (char *)theStructPtr + \
-										(size_t)offsetof( structPointer, element ) )
-																											
+    *(elemType *)( (char *)theStructPtr + \
+	    (size_t)offsetof( structPointer, element ) )
+
 
 #ifdef __cplusplus
 }
@@ -1370,3 +1370,13 @@ FLTLIB_API real64 fltReadReal64( FltFile * flt );
 
 
 
+
+/*
+ * Local Variables:
+ * tab-width: 8
+ * mode: C
+ * indent-tabs-mode: t
+ * c-file-style: "stroustrup"
+ * End:
+ * ex: shiftwidth=4 tabstop=8
+ */

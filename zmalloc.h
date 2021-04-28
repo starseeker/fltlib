@@ -46,11 +46,11 @@ extern "C" {
 #define zcalloc( a, b ) _zcalloc( (a), (b), __FILE__, __LINE__ )
 #define zfree( a ) _zfree( (a), __FILE__, __LINE__ )
 
-FLTLIB_API void * _zmalloc( unsigned int size, char *, int);
-FLTLIB_API void * _zrealloc( void * ptr, unsigned int newSize, char *, int);
-FLTLIB_API void * _zcalloc( unsigned int size, unsigned int nelem, char *, int);
-FLTLIB_API void _zfree( void * ptr, char *, int );
-FLTLIB_API void zmallocFreeAll( void );
+    FLTLIB_API void * _zmalloc( unsigned int size, char *, int);
+    FLTLIB_API void * _zrealloc( void * ptr, unsigned int newSize, char *, int);
+    FLTLIB_API void * _zcalloc( unsigned int size, unsigned int nelem, char *, int);
+    FLTLIB_API void _zfree( void * ptr, char *, int );
+    FLTLIB_API void zmallocFreeAll( void );
 
 #else
 
@@ -67,3 +67,13 @@ FLTLIB_API void zmallocFreeAll( void );
 #endif
 
 #endif /* _ZMALLOC_H_ */
+
+/*
+ * Local Variables:
+ * tab-width: 8
+ * mode: C
+ * indent-tabs-mode: t
+ * c-file-style: "stroustrup"
+ * End:
+ * ex: shiftwidth=4 tabstop=8
+ */

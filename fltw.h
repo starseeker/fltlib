@@ -33,23 +33,23 @@
 extern "C" {
 #endif
 
-FLTLIB_API uint32 fltWriteHeader( FILE * flt, FltHeader * header );
-FLTLIB_API uint32 fltWriteGroup( FILE * flt, FltGroup * group );
-FLTLIB_API FltHeader * fltBuildHeader( void );
-FLTLIB_API FltGroup * fltBuildGroup( char * name );
-FLTLIB_API uint32 fltWriteExternalReference( FILE * flt, FltExternalReference * extref );
-FLTLIB_API FltExternalReference * fltBuildExternalReference( char * refpath );
-FLTLIB_API uint32 fltWriteMatrix( FILE * flt, FltMatrix * mat );
-FLTLIB_API FltMatrix *
-fltBuildMatrix( real32 x, real32 y, real32 z, real32 h, real32 p, real32 r );
-FLTLIB_API FltMatrix * fltBuildMatrix4x4( float cmat[4][4] );
-FLTLIB_API FltMatrix * fltBuildMatrixSv( real32 *pos, real32 *ori, 
-																															real32 *scale );
-FLTLIB_API uint32 fltWritePushLevel( FILE * flt );
-FLTLIB_API uint32 fltWritePopLevel( FILE * flt );
-FLTLIB_API uint32 fltWriteDefaultVertexPalette( FILE * flt );
-FLTLIB_API uint32 fltWriteDefaultColorPalette( FILE * flt );
-FLTLIB_API uint32 fltWriteDefaultLightSourcePalette( FILE * flt );
+    FLTLIB_API uint32 fltWriteHeader( FILE * flt, FltHeader * header );
+    FLTLIB_API uint32 fltWriteGroup( FILE * flt, FltGroup * group );
+    FLTLIB_API FltHeader * fltBuildHeader( void );
+    FLTLIB_API FltGroup * fltBuildGroup( char * name );
+    FLTLIB_API uint32 fltWriteExternalReference( FILE * flt, FltExternalReference * extref );
+    FLTLIB_API FltExternalReference * fltBuildExternalReference( char * refpath );
+    FLTLIB_API uint32 fltWriteMatrix( FILE * flt, FltMatrix * mat );
+    FLTLIB_API FltMatrix *
+	fltBuildMatrix( real32 x, real32 y, real32 z, real32 h, real32 p, real32 r );
+    FLTLIB_API FltMatrix * fltBuildMatrix4x4( float cmat[4][4] );
+    FLTLIB_API FltMatrix * fltBuildMatrixSv( real32 *pos, real32 *ori,
+	    real32 *scale );
+    FLTLIB_API uint32 fltWritePushLevel( FILE * flt );
+    FLTLIB_API uint32 fltWritePopLevel( FILE * flt );
+    FLTLIB_API uint32 fltWriteDefaultVertexPalette( FILE * flt );
+    FLTLIB_API uint32 fltWriteDefaultColorPalette( FILE * flt );
+    FLTLIB_API uint32 fltWriteDefaultLightSourcePalette( FILE * flt );
 
 #ifdef __cplusplus
 }
@@ -57,3 +57,13 @@ FLTLIB_API uint32 fltWriteDefaultLightSourcePalette( FILE * flt );
 
 
 #endif /* _FLTW_H_ */
+
+/*
+ * Local Variables:
+ * tab-width: 8
+ * mode: C
+ * indent-tabs-mode: t
+ * c-file-style: "stroustrup"
+ * End:
+ * ex: shiftwidth=4 tabstop=8
+ */
