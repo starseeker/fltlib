@@ -281,7 +281,7 @@ _zrealloc( void * ptr, unsigned int newSize, char * file, int line )
 				}
 				else
 				{
-					printf( "Unable to realloc: %p (%d bytes) for: %s::%d\n", 
+					printf( "Unable to realloc: %p (%ld bytes) for: %s::%d\n", 
 										ptr, sizeof(MHeader)+ allocsize, file,line );
 					exit(0);
 					return 0;
